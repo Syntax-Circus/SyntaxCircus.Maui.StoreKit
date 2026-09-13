@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.iOS.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0-ios</TargetFramework>
     <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
@@ -28,6 +28,17 @@
   </ItemGroup>
   <ItemGroup>
     <ObjcBindingApiDefinition Include="ApiDefinitions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!--
+      Must be the .xcframework, not a RuntimeIdentifier-conditioned bare .a per slice: this is a
+      *library* project, and RuntimeIdentifier does not propagate down from a consuming app's
+      ProjectReference into a referenced library's own build - a condition on $(RuntimeIdentifier)
+      here would only ever be evaluated against this project's own (usually RID-less) build, never
+      the app's, so it silently never matches and the NativeReference item never gets added at
+      all. An .xcframework's whole purpose is to be RID-agnostic at this level - the correct slice
+      is selected by the *app's* build only at final link time.
+    -->
     <NativeReference Include="..\..\native\AppTransactionBridge\build\AppTransactionBridge.xcframework">
       <Kind>Static</Kind>
       <SmartLink>true</SmartLink>
