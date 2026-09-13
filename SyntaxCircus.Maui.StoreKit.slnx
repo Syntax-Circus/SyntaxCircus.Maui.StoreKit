@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".github/workflows/build.yml" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="GitVersion.yml" />
+    <File Path="global.json" />
+    <File Path="LICENSE.txt" />
+    <File Path="publish.ps1" />
+    <File Path="README.md" />
+    <File Path="scripts/build-xcframework.sh" />
+  </Folder>
+  <Folder Name="/native/">
+    <File Path="native/AppTransactionBridge/Package.swift" />
+    <File Path="native/AppTransactionBridge/Sources/AppTransactionBridge/AppTransactionBridge.swift" />
+  </Folder>
+  <Project Path="src/SyntaxCircus.Maui.StoreKit/SyntaxCircus.Maui.StoreKit.csproj" />
+</Solution>

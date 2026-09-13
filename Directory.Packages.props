@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="SyntaxCircus.Maui.Environments" Version="0.1.0" />
+    <PackageVersion Include="GitVersion.MsBuild" Version="6.6.0" />
+  </ItemGroup>
+</Project>
