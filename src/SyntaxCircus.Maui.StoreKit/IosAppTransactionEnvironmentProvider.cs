@@ -11,10 +11,26 @@ namespace SyntaxCircus.Maui.StoreKit;
 /// </summary>
 public sealed class IosAppTransactionEnvironmentProvider : IAppTransactionEnvironmentProvider
 {
-    public Task<string?> GetEnvironmentAsync(CancellationToken cancellationToken = default)
+    // AppTransaction.shared can be slow to resolve shortly after a fresh TestFlight/App Store
+    // install - it may need to contact Apple's servers for a freshly signed transaction - and the
+    // native completion callback has no cancellation or deadline of its own, so without a timeout
+    // here a slow/hung native call would block distribution-channel detection (and therefore the
+    // app's loading screen) indefinitely.
+    private static readonly TimeSpan NativeCallTimeout = TimeSpan.FromSeconds(8);
+
+    public async Task<string?> GetEnvironmentAsync(CancellationToken cancellationToken = default)
     {
         var completionSource = new TaskCompletionSource<string?>();
         AppTransactionBridge.GetEnvironment(result => completionSource.TrySetResult(result?.ToString()));
-        return completionSource.Task;
+
+        var delay = Task.Delay(NativeCallTimeout, cancellationToken);
+        var completed = await Task.WhenAny(completionSource.Task, delay).ConfigureAwait(false);
+        cancellationToken.ThrowIfCancellationRequested();
+        if (completed == delay)
+        {
+            throw new TimeoutException("Timed out waiting for AppTransactionBridge.GetEnvironment to complete.");
+        }
+
+        return await completionSource.Task.ConfigureAwait(false);
     }
 }
